@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "postcss": "^5",
-    "postcss-import": "^5.2.2",
+    "postcss-import": "^7.0.0",
     "vow": "^0.4.9"
   },
   "peerDependencies": {
