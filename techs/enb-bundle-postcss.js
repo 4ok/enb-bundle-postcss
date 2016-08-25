@@ -19,7 +19,7 @@ module.exports = require('enb/lib/build-flow').create()
 
         return fs.read(cssFilename, 'utf8')
             .then(function(css) {
-                postcss([pimport()].concat(_this._plugins))
+                postcss([].concat(_this._plugins).concat(pimport()))
                     .process(css, {
                         from: filename,
                         to: filename,
