@@ -2,7 +2,6 @@ var fs = require('enb/lib/fs/async-fs');
 var vow = require('vow');
 var path = require('path');
 var postcss = require('postcss');
-var pimport = require('postcss-import');
 var EOL = require('os').EOL;
 
 module.exports = require('enb/lib/build-flow').create()
@@ -19,7 +18,7 @@ module.exports = require('enb/lib/build-flow').create()
 
         return fs.read(cssFilename, 'utf8')
             .then(function(css) {
-                postcss([].concat(_this._plugins).concat(pimport()))
+                postcss(_this._plugins)
                     .process(css, {
                         from: filename,
                         to: filename,
