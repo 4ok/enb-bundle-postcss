@@ -1,6 +1,6 @@
 {
   "name": "enb-bundle-postcss",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "postCSS tech for ENB",
   "keywords": [
     "bem",
@@ -10,9 +10,9 @@
     "css"
   ],
   "dependencies": {
-    "postcss": "^6.0.13",
-    "postcss-import": "^11.0.0",
-    "vow": "^0.4.17"
+    "postcss": "^5.2.16",
+    "postcss-import": "^9.1.0",
+    "vow": "^0.4.15"
   },
   "peerDependencies": {
     "enb": ">=0.13.11 <2.0.0"
