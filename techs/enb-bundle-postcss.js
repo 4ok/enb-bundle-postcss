@@ -1,14 +1,15 @@
-var fs = require('enb/lib/fs/async-fs');
-var vow = require('vow');
-var path = require('path');
-var postcss = require('postcss');
-var EOL = require('os').EOL;
+var fs      = require('enb/lib/fs/async-fs'),
+    vow     = require('vow'),
+    path    = require('path'),
+    postcss = require('postcss'),
+    pimport = require('postcss-import');
 
 module.exports = require('enb/lib/build-flow').create()
-    .name('enb-bundle-postcss')
+    .name('enb-postcss')
     .target('target', '?.css')
     .useSourceFilename('source', '?.post.css')
     .defineOption('plugins')
+    .defineOption('parser')
     .defineOption('sourcemap', false)
     .builder(function(cssFilename) {
         var def = vow.defer(),
@@ -18,11 +19,21 @@ module.exports = require('enb/lib/build-flow').create()
 
         return fs.read(cssFilename, 'utf8')
             .then(function(css) {
-                postcss(_this._plugins)
+                postcss([pimport()].concat(_this._plugins))
                     .process(css, {
                         from: filename,
                         to: filename,
+                        parser: _this._parser,
                         map: _this._sourcemap
+                    })
+                    .catch(function(error) {
+                        if (error.name === 'CssSyntaxError') {
+                            process.stderr.write(error.message + error.showSourceCode());
+
+                            return;
+                        }
+
+                        throw error;
                     })
                     .then(function(result) {
                         result.warnings().forEach(function(warn) {
@@ -30,14 +41,7 @@ module.exports = require('enb/lib/build-flow').create()
                         });
 
                         def.resolve(result);
-                    })
-                    .catch(function(error) {
-                        if (error.name === 'CssSyntaxError') {
-                            process.stderr.write(error.message + error.showSourceCode() + EOL);
-                        }
-
-                        def.reject(error);
-                    })
+                    });
 
                 return def.promise();
             });
